@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import TitleBar from '../TitleBar'
+import TextFormatter from '../components/TextFormatter'
+import RegexTester from '../components/RegexTester'
 import './TextTools.css'
 
 function TextTools({ onBack }) {
@@ -133,16 +135,22 @@ function TextTools({ onBack }) {
                       </div>
                     </div>
                     <div className="tool-workspace">
-                      <div className="workspace-placeholder">
-                        <div className="placeholder-icon">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                            <rect x="3" y="3" width="18" height="18" rx="2"/>
-                            <path d="M3 9h18M9 21V9"/>
-                          </svg>
+                      {tool.id === 'format' ? (
+                        <TextFormatter />
+                      ) : tool.id === 'regex' ? (
+                        <RegexTester />
+                      ) : (
+                        <div className="workspace-placeholder">
+                          <div className="placeholder-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                              <rect x="3" y="3" width="18" height="18" rx="2"/>
+                              <path d="M3 9h18M9 21V9"/>
+                            </svg>
+                          </div>
+                          <p>工具开发中...</p>
+                          <span>即将推出</span>
                         </div>
-                        <p>工具开发中...</p>
-                        <span>即将推出</span>
-                      </div>
+                      )}
                     </div>
                   </div>
                 ))}
