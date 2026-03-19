@@ -229,7 +229,10 @@
 .tools-content {
   flex: 1;
   padding: 1.5rem;
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .empty-state {
@@ -265,7 +268,10 @@
 }
 
 .tool-detail {
-  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .detail-card {
@@ -273,19 +279,21 @@
   border: 1px solid rgba(0, 212, 255, 0.1);
   border-radius: 16px;
   padding: 1.5rem;
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   overflow: hidden;
+  min-height: 0;
 }
 
 .detail-header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .detail-icon {
@@ -314,10 +322,14 @@
   margin: 0;
 }
 
+.detail-features {
+  flex-shrink: 0;
+}
+
 .detail-features h3 {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.75rem 0;
 }
 
 .feature-list {
@@ -354,7 +366,7 @@
   border: 1px dashed rgba(0, 212, 255, 0.2);
   border-radius: 12px;
   overflow: hidden;
-  min-height: 300px;
+  min-height: 0;
 }
 
 .workspace-placeholder {

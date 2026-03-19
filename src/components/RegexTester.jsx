@@ -196,38 +196,40 @@ function RegexTester() {
           </div>
         </div>
 
-        <div className="flags-row">
-          <span className="flags-label">模式:</span>
-          <div className="flags-buttons">
-            {Object.entries(flagLabels).map(([flag, { label, desc }]) => (
-              <button
-                key={flag}
-                className={`flag-btn ${flags[flag] ? 'active' : ''}`}
-                onClick={() => handleFlagToggle(flag)}
-                title={desc}
-              >
-                <span className="flag-char">{flag}</span>
-                <span className="flag-label">{label}</span>
-              </button>
-            ))}
+        <div className="flags-templates-row">
+          <div className="flags-section">
+            <span className="flags-label">模式:</span>
+            <div className="flags-buttons">
+              {Object.entries(flagLabels).map(([flag, { label, desc }]) => (
+                <button
+                  key={flag}
+                  className={`flag-btn ${flags[flag] ? 'active' : ''}`}
+                  onClick={() => handleFlagToggle(flag)}
+                  title={desc}
+                >
+                  <span className="flag-char">{flag}</span>
+                  <span className="flag-label">{label}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="templates-section">
-          <div className="templates-header">
-            <span className="templates-title">常用模板</span>
-          </div>
-          <div className="templates-grid">
-            {commonTemplates.map(template => (
-              <button
-                key={template.id}
-                className={`template-btn ${selectedTemplate === template.id ? 'active' : ''}`}
-                onClick={() => handleTemplateSelect(template)}
-                title={template.description}
-              >
-                {template.name}
-              </button>
-            ))}
+          <div className="templates-section">
+            <div className="templates-header">
+              <span className="templates-title">常用模板</span>
+            </div>
+            <div className="templates-grid">
+              {commonTemplates.map(template => (
+                <button
+                  key={template.id}
+                  className={`template-btn ${selectedTemplate === template.id ? 'active' : ''}`}
+                  onClick={() => handleTemplateSelect(template)}
+                  title={template.description}
+                >
+                  {template.name}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
