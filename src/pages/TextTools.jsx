@@ -2,6 +2,7 @@ import { useState } from 'react'
 import TitleBar from '../TitleBar'
 import TextFormatter from '../components/TextFormatter'
 import RegexTester from '../components/RegexTester'
+import EncodingConverter from '../components/EncodingConverter'
 import './TextTools.css'
 
 function TextTools({ onBack }) {
@@ -54,6 +55,30 @@ function TextTools({ onBack }) {
   const handleBack = () => {
     if (onBack) {
       onBack()
+    }
+  }
+
+  const renderTool = (toolId) => {
+    switch (toolId) {
+      case 'format':
+        return <TextFormatter />
+      case 'regex':
+        return <RegexTester />
+      case 'encode':
+        return <EncodingConverter />
+      default:
+        return (
+          <div className="workspace-placeholder">
+            <div className="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 9h18M9 21V9"/>
+              </svg>
+            </div>
+            <p>工具开发中...</p>
+            <span>即将推出</span>
+          </div>
+        )
     }
   }
 
@@ -135,22 +160,7 @@ function TextTools({ onBack }) {
                       </div>
                     </div>
                     <div className="tool-workspace">
-                      {tool.id === 'format' ? (
-                        <TextFormatter />
-                      ) : tool.id === 'regex' ? (
-                        <RegexTester />
-                      ) : (
-                        <div className="workspace-placeholder">
-                          <div className="placeholder-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                              <rect x="3" y="3" width="18" height="18" rx="2"/>
-                              <path d="M3 9h18M9 21V9"/>
-                            </svg>
-                          </div>
-                          <p>工具开发中...</p>
-                          <span>即将推出</span>
-                        </div>
-                      )}
+                      {renderTool(tool.id)}
                     </div>
                   </div>
                 ))}
