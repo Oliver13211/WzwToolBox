@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import TitleBar from './TitleBar'
 import TextTools from './pages/TextTools'
+import ImageTools from './pages/ImageTools'
 import './App.css'
 
 function App() {
@@ -90,6 +91,10 @@ function App() {
 
   if (currentPage === 'text-tools') {
     return <TextTools onBack={handleBackToHome} />
+  }
+
+  if (currentPage === 'image-tools') {
+    return <ImageTools onBack={handleBackToHome} />
   }
 
   return (

@@ -300,8 +300,8 @@ function TextFormatter() {
   return (
     <div className="text-formatter">
       <div className="formatter-toolbar">
-        <div className="format-type-selector">
-          <span className="selector-label">格式类型:</span>
+        <div className="toolbar-section">
+          <span className="selector-label">格式:</span>
           <div className="type-buttons">
             {formatTypes.map(type => (
               <button
@@ -310,14 +310,16 @@ function TextFormatter() {
                 onClick={() => setFormatType(type.id)}
               >
                 <span className="type-icon">{type.icon}</span>
-                <span className="type-label">{type.label}</span>
+                <span>{type.label}</span>
               </button>
             ))}
           </div>
         </div>
         
-        <div className="mode-selector">
-          <span className="selector-label">操作模式:</span>
+        <div className="toolbar-divider"></div>
+        
+        <div className="toolbar-section">
+          <span className="selector-label">模式:</span>
           <div className="mode-buttons">
             <button
               className={`mode-btn ${mode === 'format' ? 'active' : ''}`}
@@ -397,7 +399,7 @@ function TextFormatter() {
             className="editor-textarea output"
             value={outputText}
             readOnly
-            placeholder="格式化结果将显示在这里..."
+            placeholder="结果将显示在这里..."
             spellCheck={false}
           />
         </div>
