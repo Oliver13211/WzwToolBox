@@ -22,7 +22,7 @@ function App() {
     {
       id: 2,
       title: '图片工具',
-      description: '图片压缩、格式转换、水印添加等',
+      description: '图片压缩、格式转换等',
       page: 'image-tools',
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

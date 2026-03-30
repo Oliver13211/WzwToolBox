@@ -18,7 +18,6 @@ function TextTools({ onBack }) {
           <path d="M4 6h16M4 12h16M4 18h10" strokeLinecap="round"/>
         </svg>
       ),
-      features: ['JSON 格式化', 'XML 格式化', 'HTML 格式化', 'CSS 压缩/格式化', 'JS 压缩/格式化']
     },
     {
       id: 'regex',
@@ -30,7 +29,6 @@ function TextTools({ onBack }) {
           <path d="M21 21l-4.35-4.35M11 8v6M8 11h6" strokeLinecap="round"/>
         </svg>
       ),
-      features: ['实时匹配', '高亮显示', '支持全局/多行模式', '常用正则模板', '匹配结果统计']
     },
     {
       id: 'encode',
@@ -44,7 +42,6 @@ function TextTools({ onBack }) {
           <polyline points="10,15 12,17 14,15"/>
         </svg>
       ),
-      features: ['Base64 编解码', 'URL 编解码', 'Unicode 转换', 'HTML 实体转换', '哈希计算']
     }
   ]
 
@@ -146,17 +143,6 @@ function TextTools({ onBack }) {
                       <div className="detail-info">
                         <h2>{tool.title}</h2>
                         <p>{tool.description}</p>
-                      </div>
-                    </div>
-                    <div className="detail-features">
-                      <h3>功能特性</h3>
-                      <div className="feature-list">
-                        {tool.features.map((feature, idx) => (
-                          <div key={idx} className="feature-item">
-                            <span className="feature-dot"></span>
-                            {feature}
-                          </div>
-                        ))}
                       </div>
                     </div>
                     <div className="tool-workspace">
