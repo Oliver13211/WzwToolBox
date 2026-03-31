@@ -1,6 +1,7 @@
 import { BrowserWindow, app, ipcMain } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
+import net from "net";
 var __filename = fileURLToPath(import.meta.url);
 var __dirname = path.dirname(__filename);
 function createWindow() {
@@ -41,6 +42,49 @@ ipcMain.on("window-close", (event) => {
 ipcMain.handle("window-is-maximized", (event) => {
 	const win = BrowserWindow.fromWebContents(event.sender);
 	return win ? win.isMaximized() : false;
+});
+function scanPort(host, port, timeout = 3e3) {
+	return new Promise((resolve) => {
+		const socket = new net.Socket();
+		let isOpen = false;
+		socket.setTimeout(timeout);
+		socket.on("connect", () => {
+			isOpen = true;
+			socket.destroy();
+		});
+		socket.on("timeout", () => {
+			socket.destroy();
+		});
+		socket.on("error", () => {
+			socket.destroy();
+		});
+		socket.on("close", () => {
+			resolve(isOpen);
+		});
+		socket.connect(port, host);
+	});
+}
+ipcMain.handle("scan-ports", async (event, { host, ports }) => {
+	const results = [];
+	const totalPorts = ports.length;
+	for (let i = 0; i < ports.length; i++) {
+		const port = ports[i];
+		const startTime = Date.now();
+		const isOpen = await scanPort(host, port.port);
+		const responseTime = Date.now() - startTime;
+		results.push({
+			...port,
+			status: isOpen ? "open" : "closed",
+			responseTime: isOpen ? responseTime : "-"
+		});
+		event.sender.send("scan-progress", {
+			current: i + 1,
+			total: totalPorts,
+			percent: Math.round((i + 1) / totalPorts * 100)
+		});
+		await new Promise((resolve) => setTimeout(resolve, 50));
+	}
+	return results;
 });
 app.whenReady().then(() => {
 	createWindow();

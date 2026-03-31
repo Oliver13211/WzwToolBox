@@ -8,5 +8,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	closeWindow: () => ipcRenderer.send("window-close"),
 	isMaximized: () => ipcRenderer.invoke("window-is-maximized"),
 	onWindowMaximized: (callback) => ipcRenderer.on("window-maximized", callback),
-	onWindowUnmaximized: (callback) => ipcRenderer.on("window-unmaximized", callback)
+	onWindowUnmaximized: (callback) => ipcRenderer.on("window-unmaximized", callback),
+	scanPorts: (host, ports) => ipcRenderer.invoke("scan-ports", {
+		host,
+		ports
+	}),
+	onScanProgress: (callback) => ipcRenderer.on("scan-progress", (event, data) => callback(data))
 });

@@ -35,6 +35,15 @@
   animation: glowMove 20s ease-in-out infinite;
 }
 
+@keyframes glowMove {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(5%, 5%) rotate(180deg);
+  }
+}
+
 .page-header {
   position: relative;
   z-index: 1;
@@ -168,9 +177,9 @@
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: all 0.3s ease;
-  animation: fadeSlideIn 0.5s ease forwards;
   opacity: 0;
   transform: translateX(-20px);
+  animation: fadeSlideIn 0.5s ease forwards;
 }
 
 @keyframes fadeSlideIn {
@@ -320,42 +329,6 @@
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.5);
   margin: 0;
-}
-
-.detail-features {
-  flex-shrink: 0;
-}
-
-.detail-features h3 {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 0.75rem 0;
-}
-
-.feature-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 212, 255, 0.05);
-  border: 1px solid rgba(0, 212, 255, 0.15);
-  border-radius: 20px;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.feature-dot {
-  width: 6px;
-  height: 6px;
-  background: #00d4ff;
-  border-radius: 50%;
-  box-shadow: 0 0 6px #00d4ff;
 }
 
 .tool-workspace {

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import TitleBar from './TitleBar'
 import TextTools from './pages/TextTools'
 import ImageTools from './pages/ImageTools'
+import NetworkTools from './pages/NetworkTools'
 import './App.css'
 
 function App() {
@@ -89,12 +90,16 @@ function App() {
     setCurrentPage('home')
   }
 
-  if (currentPage === 'text-tools') {
-    return <TextTools onBack={handleBackToHome} />
-  }
-
   if (currentPage === 'image-tools') {
     return <ImageTools onBack={handleBackToHome} />
+  }
+
+  if (currentPage === 'network-tools') {
+    return <NetworkTools onBack={handleBackToHome} />
+  }
+
+  if (currentPage === 'text-tools') {
+    return <TextTools onBack={handleBackToHome} />
   }
 
   return (
