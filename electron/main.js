@@ -2,6 +2,12 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import net from 'net'
+import dns from 'dns'
+import { promisify } from 'util'
+import { exec } from 'child_process'
+import iconv from 'iconv-lite'
+
+const execAsync = promisify(exec)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -119,6 +125,196 @@ ipcMain.handle('scan-ports', async (event, { host, ports }) => {
   }
 
   return results
+})
+
+// DNS 查询功能 - 使用系统 DNS
+ipcMain.handle('dns-query', async (event, { domain, type }) => {
+  const startTime = Date.now()
+  
+  try {
+    let answers = []
+    
+    // 使用 dns.lookup 进行基础查询 (A 记录和 AAAA 记录)
+    if (type === 'A') {
+      const { address } = await dns.promises.lookup(domain, { family: 4 })
+      answers = [{ type: 'A', data: address, ttl: 300 }]
+    } else if (type === 'AAAA') {
+      const { address } = await dns.promises.lookup(domain, { family: 6 })
+      answers = [{ type: 'AAAA', data: address, ttl: 300 }]
+    } else {
+      // 对于其他记录类型，使用 resolve 方法
+      let records = []
+      switch (type) {
+        case 'MX':
+          records = await dns.promises.resolveMx(domain)
+          answers = records.map(mx => ({ 
+            type: 'MX', 
+            data: `${mx.priority} ${mx.exchange}`, 
+            ttl: 300 
+          }))
+          break
+        case 'NS':
+          records = await dns.promises.resolveNs(domain)
+          answers = records.map(ns => ({ type: 'NS', data: ns, ttl: 300 }))
+          break
+        case 'CNAME':
+          records = await dns.promises.resolveCname(domain)
+          answers = records.map(cname => ({ type: 'CNAME', data: cname, ttl: 300 }))
+          break
+        case 'TXT':
+          records = await dns.promises.resolveTxt(domain)
+          answers = records.map(txt => ({ type: 'TXT', data: txt.join(' '), ttl: 300 }))
+          break
+        case 'SOA':
+          const soa = await dns.promises.resolveSoa(domain)
+          answers = [{
+            type: 'SOA',
+            data: `${soa.nsname} ${soa.hostmaster} ${soa.serial}`,
+            ttl: soa.refresh
+          }]
+          break
+        default:
+          // 尝试通用 resolve
+          try {
+            records = await dns.promises.resolve(domain, type)
+            answers = records.map(r => ({ type, data: String(r), ttl: 300 }))
+          } catch (e) {
+            // 如果 resolve 失败，尝试 lookup 作为后备
+            if (type === 'ANY' || type === 'A') {
+              const { address } = await dns.promises.lookup(domain)
+              answers = [{ type: 'A', data: address, ttl: 300 }]
+            } else {
+              throw e
+            }
+          }
+      }
+    }
+
+    const queryTime = Date.now() - startTime
+
+    return {
+      success: true,
+      domain,
+      type,
+      answers,
+      queryTime
+    }
+  } catch (error) {
+    const queryTime = Date.now() - startTime
+    
+    // 特殊错误处理
+    let errorMessage = error.message
+    if (error.code === 'ENOTFOUND') {
+      errorMessage = '域名不存在或无法解析'
+    } else if (error.code === 'ECONNREFUSED') {
+      errorMessage = 'DNS 服务器连接被拒绝'
+    } else if (error.code === 'ETIMEDOUT' || error.code === 'ETIMEOUT') {
+      errorMessage = 'DNS 查询超时'
+    } else if (error.code === 'EAI_AGAIN') {
+      errorMessage = 'DNS 服务暂时不可用，请稍后重试'
+    }
+
+    return {
+      success: false,
+      domain,
+      type,
+      error: errorMessage,
+      queryTime
+    }
+  }
+})
+
+// Ping 测试功能
+ipcMain.handle('ping', async (event, { host, count, timeout }) => {
+  const isWindows = process.platform === 'win32'
+  const pingCount = Math.min(Math.max(count || 4, 1), 10)
+  const pingTimeout = Math.min(Math.max(timeout || 8000, 1000), 30000)
+
+  try {
+    let command
+    if (isWindows) {
+      command = `ping -n ${pingCount} -w ${pingTimeout} ${host}`
+    } else {
+      command = `ping -c ${pingCount} -W ${Math.ceil(pingTimeout / 1000)} ${host}`
+    }
+
+    const { stdout, stderr } = await execAsync(command, {
+      timeout: pingTimeout * pingCount + 10000,
+      maxBuffer: 1024 * 1024,
+      windowsHide: true,
+      encoding: 'buffer'
+    })
+
+    let output
+    if (isWindows) {
+      output = iconv.decode(stdout || stderr, 'gbk')
+    } else {
+      output = (stdout || stderr).toString()
+    }
+
+    return {
+      success: true,
+      output,
+      isWindows,
+      host,
+      count: pingCount
+    }
+  } catch (error) {
+    if (error.killed) {
+      return {
+        success: false,
+        error: 'Ping 操作超时，请稍后重试',
+        isWindows,
+        host
+      }
+    }
+
+    let output = ''
+    if (isWindows) {
+      output = iconv.decode(error.stdout || error.stderr || Buffer.from(''), 'gbk')
+    } else {
+      output = (error.stdout || error.stderr || '').toString()
+    }
+
+    if (output.includes('请求找不到主机') || output.includes('could not find host') ||
+        output.includes('Name or service not known') || output.includes('non-existent domain')) {
+      return {
+        success: false,
+        error: '无法解析主机名，请检查地址是否正确',
+        isWindows,
+        host,
+        output
+      }
+    }
+
+    if (output.includes('无法访问目标主机') || output.includes('Destination Host Unreachable') ||
+        output.includes('Network is unreachable')) {
+      return {
+        success: false,
+        error: '目标主机不可达，网络可能存在问题',
+        isWindows,
+        host,
+        output
+      }
+    }
+
+    if (output) {
+      return {
+        success: true,
+        output,
+        isWindows,
+        host,
+        count: pingCount
+      }
+    }
+
+    return {
+      success: false,
+      error: error.message || 'Ping 执行失败',
+      isWindows,
+      host
+    }
+  }
 })
 
 app.whenReady().then(() => {

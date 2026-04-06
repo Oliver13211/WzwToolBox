@@ -13,5 +13,14 @@ contextBridge.exposeInMainWorld("electronAPI", {
 		host,
 		ports
 	}),
-	onScanProgress: (callback) => ipcRenderer.on("scan-progress", (event, data) => callback(data))
+	onScanProgress: (callback) => ipcRenderer.on("scan-progress", (event, data) => callback(data)),
+	dnsQuery: (domain, type) => ipcRenderer.invoke("dns-query", {
+		domain,
+		type
+	}),
+	ping: (host, count, timeout) => ipcRenderer.invoke("ping", {
+		host,
+		count,
+		timeout
+	})
 });

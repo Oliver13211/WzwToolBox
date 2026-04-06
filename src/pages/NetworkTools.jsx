@@ -2,6 +2,8 @@ import { useState } from 'react'
 import TitleBar from '../TitleBar'
 import IPQuery from '../components/IPQuery'
 import PortScan from '../components/PortScan'
+import DNSTest from '../components/DNSTest'
+import PingTest from '../components/PingTest'
 import './NetworkTools.css'
 
 function NetworkTools({ onBack }) {
@@ -90,6 +92,10 @@ function NetworkTools({ onBack }) {
         return <IPQuery />
       case 'port-scan':
         return <PortScan />
+      case 'dns-test':
+        return <DNSTest />
+      case 'ping':
+        return <PingTest />
       default:
         return (
           <div className="workspace-placeholder">
