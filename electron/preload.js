@@ -13,5 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // DNS 查询 API
   dnsQuery: (domain, type) => ipcRenderer.invoke('dns-query', { domain, type }),
   // Ping 测试 API
-  ping: (host, count, timeout) => ipcRenderer.invoke('ping', { host, count, timeout })
+  ping: (host, count, timeout) => ipcRenderer.invoke('ping', { host, count, timeout }),
+  // Whois 查询 API
+  whois: (domain) => ipcRenderer.invoke('whois', { domain })
 })

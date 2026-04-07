@@ -317,6 +317,95 @@ ipcMain.handle('ping', async (event, { host, count, timeout }) => {
   }
 })
 
+// Whois 查询功能
+const WHOIS_SERVERS = {
+  'com': 'whois.verisign-grs.com',
+  'net': 'whois.verisign-grs.com',
+  'org': 'whois.pir.org',
+  'cn': 'whois.cnnic.cn',
+  'io': 'whois.nic.io',
+  'co': 'whois.nic.co',
+  'xyz': 'whois.nic.xyz',
+  'info': 'whois.afilias.net',
+  'biz': 'whois.neulevel.biz',
+  'me': 'whois.nic.me',
+  'tv': 'whois.nic.tv',
+  'cc': 'whois.nic.cc',
+  'ai': 'whois.nic.ai',
+}
+
+function queryWhois(server, domain, timeout = 10000) {
+  return new Promise((resolve, reject) => {
+    const socket = new net.Socket()
+    let data = ''
+
+    socket.setTimeout(timeout)
+
+    socket.on('connect', () => {
+      socket.write(domain + '\r\n')
+    })
+
+    socket.on('data', (chunk) => {
+      data += chunk.toString()
+    })
+
+    socket.on('close', () => {
+      resolve(data)
+    })
+
+    socket.on('timeout', () => {
+      socket.destroy()
+      reject(new Error('Whois 查询超时'))
+    })
+
+    socket.on('error', (err) => {
+      reject(err)
+    })
+
+    socket.connect(43, server)
+  })
+}
+
+ipcMain.handle('whois', async (event, { domain }) => {
+  try {
+    const tld = domain.split('.').pop().toLowerCase()
+    const server = WHOIS_SERVERS[tld] || 'whois.iana.org'
+
+    let output = await queryWhois(server, domain)
+
+    const referralMatch = output.match(/refer:\s*([^\s]+)/i)
+    if (referralMatch && referralMatch[1]) {
+      const referServer = referralMatch[1].trim()
+      if (referServer !== server) {
+        try {
+          output = await queryWhois(referServer, domain)
+        } catch {
+          // 使用原始输出
+        }
+      }
+    }
+
+    if (!output || output.trim().length === 0) {
+      return {
+        success: false,
+        error: '未找到该域名的 Whois 信息'
+      }
+    }
+
+    return {
+      success: true,
+      output,
+      domain
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Whois 查询失败',
+      domain
+    }
+  }
+})
+
 app.whenReady().then(() => {
   createWindow()
 

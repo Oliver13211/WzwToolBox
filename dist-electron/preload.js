@@ -22,5 +22,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
 		host,
 		count,
 		timeout
-	})
+	}),
+	whois: (domain) => ipcRenderer.invoke("whois", { domain })
 });

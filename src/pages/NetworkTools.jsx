@@ -4,6 +4,7 @@ import IPQuery from '../components/IPQuery'
 import PortScan from '../components/PortScan'
 import DNSTest from '../components/DNSTest'
 import PingTest from '../components/PingTest'
+import WhoisTest from '../components/WhoisTest'
 import './NetworkTools.css'
 
 function NetworkTools({ onBack }) {
@@ -96,6 +97,8 @@ function NetworkTools({ onBack }) {
         return <DNSTest />
       case 'ping':
         return <PingTest />
+      case 'whois':
+        return <WhoisTest />
       default:
         return (
           <div className="workspace-placeholder">
