@@ -1,8 +1,10 @@
 import { BrowserWindow, app, ipcMain } from "electron";
 import path from "path";
-import { fileURLToPath } from "url";
+import { URL, fileURLToPath } from "url";
 import net from "net";
 import dns from "dns";
+import http from "http";
+import https from "https";
 import { promisify } from "util";
 import { exec } from "child_process";
 var __create = Object.create;
@@ -3169,6 +3171,86 @@ ipcMain.handle("whois", async (event, { domain }) => {
 			success: false,
 			error: error.message || "Whois 查询失败",
 			domain
+		};
+	}
+});
+function httpRequest(urlStr, method = "GET", timeout = 1e4) {
+	return new Promise((resolve, reject) => {
+		const startTime = Date.now();
+		let dnsTime = 0;
+		let connectTime = 0;
+		try {
+			const parsedUrl = new URL(urlStr);
+			const isHttps = parsedUrl.protocol === "https:";
+			const httpModule = isHttps ? https : http;
+			const dnsStart = Date.now();
+			dns.lookup(parsedUrl.hostname, (dnsErr, address, family) => {
+				dnsTime = Date.now() - dnsStart;
+				if (dnsErr) {
+					reject(/* @__PURE__ */ new Error(`DNS 查询失败: ${dnsErr.message}`));
+					return;
+				}
+				const options = {
+					hostname: parsedUrl.hostname,
+					port: parsedUrl.port || (isHttps ? 443 : 80),
+					path: parsedUrl.pathname + parsedUrl.search,
+					method,
+					headers: {
+						"User-Agent": "WzwToolBox/1.0",
+						"Accept": "*/*"
+					},
+					timeout
+				};
+				const connectStart = Date.now();
+				const req = httpModule.request(options, (res) => {
+					connectTime = Date.now() - connectStart;
+					const totalTime = Date.now() - startTime;
+					let body = "";
+					res.on("data", (chunk) => {
+						body += chunk;
+					});
+					res.on("end", () => {
+						resolve({
+							statusCode: res.statusCode,
+							headers: res.headers,
+							body: body.substring(0, 1024),
+							contentLength: parseInt(res.headers["content-length"]) || body.length,
+							contentType: res.headers["content-type"],
+							server: res.headers["server"],
+							url: urlStr,
+							dnsTime,
+							connectTime,
+							totalTime,
+							redirected: res.socket?.encrypted || false,
+							redirectCount: 0,
+							redirectUrls: []
+						});
+					});
+				});
+				req.on("error", (err) => {
+					reject(/* @__PURE__ */ new Error(`HTTP 请求失败: ${err.message}`));
+				});
+				req.on("timeout", () => {
+					req.destroy();
+					reject(/* @__PURE__ */ new Error("HTTP 请求超时"));
+				});
+				req.end();
+			});
+		} catch (err) {
+			reject(/* @__PURE__ */ new Error(`URL 解析失败: ${err.message}`));
+		}
+	});
+}
+ipcMain.handle("http-check", async (event, { url, method }) => {
+	try {
+		return {
+			success: true,
+			data: await httpRequest(url, method || "GET", 1e4)
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: error.message || "HTTP 检查失败"
 		};
 	}
 });

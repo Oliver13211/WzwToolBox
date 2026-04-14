@@ -3,6 +3,7 @@ import TitleBar from './TitleBar'
 import TextTools from './pages/TextTools'
 import ImageTools from './pages/ImageTools'
 import NetworkTools from './pages/NetworkTools'
+import CryptoTools from './pages/CryptoTools'
 import './App.css'
 
 function App() {
@@ -46,29 +47,6 @@ function App() {
       )
     },
     {
-      id: 4,
-      title: '系统工具',
-      description: '文件管理、进程管理、系统信息等',
-      page: 'system-tools',
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <rect x="4" y="4" width="16" height="16" rx="2"/>
-          <path d="M9 9h6v6H9z"/>
-        </svg>
-      )
-    },
-    {
-      id: 5,
-      title: '开发工具',
-      description: '代码格式化、JSON验证、API测试等',
-      page: 'dev-tools',
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M16 18l6-6-6-6M8 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      )
-    },
-    {
       id: 6,
       title: '加密工具',
       description: 'MD5生成、Base64编码、AES加密等',
@@ -100,6 +78,10 @@ function App() {
 
   if (currentPage === 'text-tools') {
     return <TextTools onBack={handleBackToHome} />
+  }
+
+  if (currentPage === 'crypto-tools') {
+    return <CryptoTools onBack={handleBackToHome} />
   }
 
   return (

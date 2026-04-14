@@ -15,5 +15,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Ping 测试 API
   ping: (host, count, timeout) => ipcRenderer.invoke('ping', { host, count, timeout }),
   // Whois 查询 API
-  whois: (domain) => ipcRenderer.invoke('whois', { domain })
+  whois: (domain) => ipcRenderer.invoke('whois', { domain }),
+  // HTTP 检查 API
+  httpCheck: (url, method) => ipcRenderer.invoke('http-check', { url, method })
 })
