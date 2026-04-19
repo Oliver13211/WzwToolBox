@@ -5,6 +5,7 @@ import net from "net";
 import dns from "dns";
 import http from "http";
 import https from "https";
+import crypto from "crypto";
 import { promisify } from "util";
 import { exec } from "child_process";
 var __create = Object.create;
@@ -3251,6 +3252,20 @@ ipcMain.handle("http-check", async (event, { url, method }) => {
 		return {
 			success: false,
 			error: error.message || "HTTP 检查失败"
+		};
+	}
+});
+ipcMain.handle("compute-hash", async (event, { text, algorithm }) => {
+	try {
+		return {
+			success: true,
+			hash: crypto.createHash(algorithm).update(text, "utf8").digest("hex"),
+			algorithm
+		};
+	} catch (error) {
+		return {
+			success: false,
+			error: error.message || "哈希生成失败"
 		};
 	}
 });

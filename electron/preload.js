@@ -17,5 +17,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Whois 查询 API
   whois: (domain) => ipcRenderer.invoke('whois', { domain }),
   // HTTP 检查 API
-  httpCheck: (url, method) => ipcRenderer.invoke('http-check', { url, method })
+  httpCheck: (url, method) => ipcRenderer.invoke('http-check', { url, method }),
+  // 哈希生成 API
+  computeHash: (text, algorithm) => ipcRenderer.invoke('compute-hash', { text, algorithm })
 })

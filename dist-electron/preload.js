@@ -27,5 +27,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	httpCheck: (url, method) => ipcRenderer.invoke("http-check", {
 		url,
 		method
+	}),
+	computeHash: (text, algorithm) => ipcRenderer.invoke("compute-hash", {
+		text,
+		algorithm
 	})
 });

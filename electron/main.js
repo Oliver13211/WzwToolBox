@@ -6,6 +6,7 @@ import net from 'net'
 import dns from 'dns'
 import http from 'http'
 import https from 'https'
+import crypto from 'crypto'
 import { promisify } from 'util'
 import { exec } from 'child_process'
 import iconv from 'iconv-lite'
@@ -499,6 +500,23 @@ ipcMain.handle('http-check', async (event, { url, method }) => {
     return {
       success: false,
       error: error.message || 'HTTP 检查失败'
+    }
+  }
+})
+
+// 哈希生成功能
+ipcMain.handle('compute-hash', async (event, { text, algorithm }) => {
+  try {
+    const hash = crypto.createHash(algorithm).update(text, 'utf8').digest('hex')
+    return {
+      success: true,
+      hash,
+      algorithm
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || '哈希生成失败'
     }
   }
 })

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import TitleBar from '../TitleBar'
+import HashGenerator from '../components/HashGenerator'
 import './CryptoTools.css'
 
 function CryptoTools({ onBack }) {
@@ -210,21 +211,6 @@ function CryptoTools({ onBack }) {
           </div>
         </div>
       </main>
-    </div>
-  )
-}
-
-function HashGenerator() {
-  return (
-    <div className="workspace-placeholder">
-      <div className="placeholder-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-          <rect x="3" y="11" width="18" height="11" rx="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-      </div>
-      <p>哈希生成工具开发中...</p>
-      <span>即将推出</span>
     </div>
   )
 }
