@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './TitleBar.css'
 
-function TitleBar() {
+function TitleBar({ onAboutClick }) {
   const [isMaximized, setIsMaximized] = useState(false)
 
   useEffect(() => {
@@ -34,9 +34,16 @@ function TitleBar() {
             <path fill="currentColor" d="M58.5 14.5c-1.5-1.5-4-1.5-5.5 0L42.5 25l-3.5-3.5 10.5-10.5c1.5-1.5 1.5-4 0-5.5-3-3-7.5-4.5-12-3.5-4.5 1-8 4-9.5 8.5-1.5 4.5-0.5 9 2 12.5L6.5 46.5c-3 3-3 8 0 11s8 3 11 0l20-23.5c3.5 2.5 8 3.5 12.5 2 4.5-1.5 7.5-5 8.5-9.5 1-4.5-0.5-9-3.5-12zM13 52c-1.5 1.5-4 1.5-5.5 0s-1.5-4 0-5.5 4-1.5 5.5 0 1.5 4 0 5.5z"/>
           </svg>
         </span>
-        <span className="title-bar-title">王中王工具箱 - WzwToolBox</span>
+        <span className="title-bar-title">王中王工具箱</span>
       </div>
       <div className="title-bar-controls">
+        <button className="title-bar-btn about" onClick={onAboutClick} title="关于">
+          <svg viewBox="0 0 12 12">
+            <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.2" fill="none" />
+            <line x1="6" y1="5" x2="6" y2="5" stroke="currentColor" strokeWidth="1.5" />
+            <line x1="6" y1="7" x2="6" y2="9" stroke="currentColor" strokeWidth="1.2" />
+          </svg>
+        </button>
         <button className="title-bar-btn minimize" onClick={handleMinimize} title="最小化">
           <svg viewBox="0 0 12 12">
             <rect y="5" width="12" height="2" fill="currentColor" />

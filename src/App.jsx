@@ -4,10 +4,12 @@ import TextTools from './pages/TextTools'
 import ImageTools from './pages/ImageTools'
 import NetworkTools from './pages/NetworkTools'
 import CryptoTools from './pages/CryptoTools'
+import AboutModal from './components/AboutModal'
 import './App.css'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
+  const [isAboutOpen, setIsAboutOpen] = useState(false)
 
   const features = [
     {
@@ -86,7 +88,8 @@ function App() {
 
   return (
     <div className="app">
-      <TitleBar />
+      <TitleBar onAboutClick={() => setIsAboutOpen(true)} />
+      <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       <div className="bg-grid"></div>
       <div className="bg-glow"></div>
       
@@ -99,7 +102,7 @@ function App() {
             </svg>
           </div>
           <h1>王中王工具箱</h1>
-          <p className="subtitle">WzwToolBox - 一站式实用工具集合</p>
+          <p className="subtitle">一站式实用工具集合</p>
           <div className="header-line"></div>
         </div>
       </header>
@@ -135,8 +138,6 @@ function App() {
       <footer className="footer">
         <div className="footer-content">
           <span className="footer-text">© 2026 王中王工具箱</span>
-          <span className="footer-divider">|</span>
-          <span className="footer-text">WzwToolBox</span>
         </div>
       </footer>
     </div>

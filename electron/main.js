@@ -16,11 +16,17 @@ const execAsync = promisify(exec)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// 设置应用名称（任务栏显示的名称）
+app.setName('王中王工具箱')
+
+let mainWindow = null
+
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     frame: false,
+    title: '王中王工具箱',
     icon: path.join(__dirname, '../public/icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -38,11 +44,19 @@ function createWindow() {
   mainWindow.setMenu(null)
 
   mainWindow.on('maximize', () => {
-    mainWindow.webContents.send('window-maximized')
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('window-maximized')
+    }
   })
 
   mainWindow.on('unmaximize', () => {
-    mainWindow.webContents.send('window-unmaximized')
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('window-unmaximized')
+    }
+  })
+
+  mainWindow.on('closed', () => {
+    mainWindow = null
   })
 }
 
@@ -64,7 +78,9 @@ ipcMain.on('window-maximize', (event) => {
 
 ipcMain.on('window-close', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender)
-  if (win) win.close()
+  if (win) {
+    win.destroy()
+  }
 })
 
 ipcMain.handle('window-is-maximized', (event) => {

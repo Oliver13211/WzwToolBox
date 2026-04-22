@@ -105,6 +105,15 @@
   width: 20px;
 }
 
+.title-bar-btn.about:hover {
+  color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+}
+
+.title-bar-btn.about:hover::before {
+  width: 20px;
+}
+
 .title-bar-btn.close:hover {
   color: #ffffff;
   background: linear-gradient(135deg, #ff4757, #ff6b81);

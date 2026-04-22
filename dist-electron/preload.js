@@ -1,35 +1,35 @@
-var { contextBridge, ipcRenderer } = (/* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, { get: (a, b) => (typeof require !== "undefined" ? require : a)[b] }) : x)(function(x) {
-	if (typeof require !== "undefined") return require.apply(this, arguments);
-	throw Error("Calling `require` for \"" + x + "\" in an environment that doesn't expose the `require` function. See https://rolldown.rs/in-depth/bundling-cjs#require-external-modules for more details.");
-}))("electron");
-contextBridge.exposeInMainWorld("electronAPI", {
-	minimizeWindow: () => ipcRenderer.send("window-minimize"),
-	maximizeWindow: () => ipcRenderer.send("window-maximize"),
-	closeWindow: () => ipcRenderer.send("window-close"),
-	isMaximized: () => ipcRenderer.invoke("window-is-maximized"),
-	onWindowMaximized: (callback) => ipcRenderer.on("window-maximized", callback),
-	onWindowUnmaximized: (callback) => ipcRenderer.on("window-unmaximized", callback),
-	scanPorts: (host, ports) => ipcRenderer.invoke("scan-ports", {
-		host,
-		ports
+var { contextBridge: e, ipcRenderer: t } = ((e) => typeof require < "u" ? require : typeof Proxy < "u" ? new Proxy(e, { get: (e, t) => (typeof require < "u" ? require : e)[t] }) : e)(function(e) {
+	if (typeof require < "u") return require.apply(this, arguments);
+	throw Error("Calling `require` for \"" + e + "\" in an environment that doesn't expose the `require` function. See https://rolldown.rs/in-depth/bundling-cjs#require-external-modules for more details.");
+})("electron");
+e.exposeInMainWorld("electronAPI", {
+	minimizeWindow: () => t.send("window-minimize"),
+	maximizeWindow: () => t.send("window-maximize"),
+	closeWindow: () => t.send("window-close"),
+	isMaximized: () => t.invoke("window-is-maximized"),
+	onWindowMaximized: (e) => t.on("window-maximized", e),
+	onWindowUnmaximized: (e) => t.on("window-unmaximized", e),
+	scanPorts: (e, n) => t.invoke("scan-ports", {
+		host: e,
+		ports: n
 	}),
-	onScanProgress: (callback) => ipcRenderer.on("scan-progress", (event, data) => callback(data)),
-	dnsQuery: (domain, type) => ipcRenderer.invoke("dns-query", {
-		domain,
-		type
+	onScanProgress: (e) => t.on("scan-progress", (t, n) => e(n)),
+	dnsQuery: (e, n) => t.invoke("dns-query", {
+		domain: e,
+		type: n
 	}),
-	ping: (host, count, timeout) => ipcRenderer.invoke("ping", {
-		host,
-		count,
-		timeout
+	ping: (e, n, r) => t.invoke("ping", {
+		host: e,
+		count: n,
+		timeout: r
 	}),
-	whois: (domain) => ipcRenderer.invoke("whois", { domain }),
-	httpCheck: (url, method) => ipcRenderer.invoke("http-check", {
-		url,
-		method
+	whois: (e) => t.invoke("whois", { domain: e }),
+	httpCheck: (e, n) => t.invoke("http-check", {
+		url: e,
+		method: n
 	}),
-	computeHash: (text, algorithm) => ipcRenderer.invoke("compute-hash", {
-		text,
-		algorithm
+	computeHash: (e, n) => t.invoke("compute-hash", {
+		text: e,
+		algorithm: n
 	})
 });

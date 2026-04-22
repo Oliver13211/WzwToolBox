@@ -4,6 +4,8 @@ import HashGenerator from '../components/HashGenerator'
 import Base64Codec from '../components/Base64Codec'
 import UrlEncoder from '../components/UrlEncoder'
 import UuidGenerator from '../components/UuidGenerator'
+import QrCodeGenerator from '../components/QrCodeGenerator'
+import JwtDecoder from '../components/JwtDecoder'
 import './CryptoTools.css'
 
 function CryptoTools({ onBack }) {
@@ -106,6 +108,10 @@ function CryptoTools({ onBack }) {
         return <UrlEncoder />
       case 'uuid':
         return <UuidGenerator />
+      case 'qrcode':
+        return <QrCodeGenerator />
+      case 'jwt':
+        return <JwtDecoder />
       default:
         return (
           <div className="workspace-placeholder">
