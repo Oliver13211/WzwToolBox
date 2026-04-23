@@ -45,51 +45,12 @@
 ## 安装使用
 
 ### 下载安装
-1. 下载最新版本的安装包 `王中王工具箱 Setup 1.0.0.exe`
+1. 下载最新版本的安装包
 2. 双击运行安装程序
 3. 按照向导完成安装
 
 ### 免安装版本
 也可以下载免安装版本，解压后直接运行 `王中王工具箱.exe`
-
-## 开发环境
-
-### 环境要求
-- Node.js >= 18
-- npm >= 9
-
-### 安装依赖
-```bash
-npm install
-```
-
-### 开发模式
-```bash
-npm run electron:dev
-```
-
-### 编译打包
-```bash
-npm run electron:build
-```
-
-## 项目结构
-
-```
-wzwtoolbox/
-├── electron/           # Electron 主进程代码
-│   ├── main.js        # 主进程入口
-│   └── preload.js     # 预加载脚本
-├── src/               # 渲染进程代码
-│   ├── components/    # 工具组件
-│   ├── pages/         # 页面组件
-│   ├── App.jsx        # 应用主组件
-│   ├── TitleBar.jsx   # 自定义标题栏
-│   └── ...
-├── public/            # 静态资源
-├── dist/              # 构建输出
-└── package.json       # 项目配置
-```
 
 ## 界面预览
 
@@ -101,7 +62,7 @@ wzwtoolbox/
 ## 系统要求
 
 - Windows 10 / Windows 11
-- 支持 x64 和 ia32 架构
+- 支持 x64 架构
 - 内存：建议 4GB 以上
 - 磁盘空间：100MB 以上
 
